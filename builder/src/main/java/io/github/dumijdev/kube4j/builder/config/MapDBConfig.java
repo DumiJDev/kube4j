@@ -14,12 +14,15 @@ import java.nio.file.Paths;
 @Configuration
 public class MapDBConfig {
   private final Logger logger = LoggerFactory.getLogger(MapDBConfig.class);
+
   @Bean
   public DB createDB() throws IOException {
-    var dbFile = Paths.get(System.getProperty("user.home"), ".kube4j", "repo.db");
+    var dbFile = Paths.get(System.getProperty("user.home"), ".kube4j", "databases", "repo.db");
 
-    logger.info("Creating directories: {}", dbFile.toAbsolutePath());
-    Files.createDirectories(dbFile.getParent());
+    if (!Files.exists(dbFile.getParent())) {
+      logger.info("Creating directories: {}", dbFile.toAbsolutePath());
+      Files.createDirectories(dbFile.getParent());
+    }
 
     return DBMaker.fileDB(dbFile.toFile())
         .checksumHeaderBypass()

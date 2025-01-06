@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface BuildRepository {
   Optional<Resource> findNativeImage(String imageName);
+
   void deleteNativeImage(String imageName);
+
   void saveNativeImage(String imageName, byte[] content);
 }

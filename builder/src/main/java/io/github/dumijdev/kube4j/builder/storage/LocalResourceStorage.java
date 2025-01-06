@@ -16,6 +16,12 @@ import java.util.Optional;
 public class LocalResourceStorage implements ResourceStorage {
   private final String basePath = "/etc/kube4j/blobs";
 
+  private static void validName(String name) {
+    if (!ValidationUtils.isValidNativeName(name)) {
+      throw new IllegalArgumentException("Invalid native name " + name);
+    }
+  }
+
   @Override
   public Optional<Resource> find(String name) {
     validName(name);
@@ -38,7 +44,6 @@ public class LocalResourceStorage implements ResourceStorage {
     return Optional.of(file);
   }
 
-
   @Override
   public void save(String name, byte[] content) throws IOException {
     validName(name);
@@ -55,11 +60,5 @@ public class LocalResourceStorage implements ResourceStorage {
 
     Files.delete(Paths.get(basePath, name));
 
-  }
-
-  private static void validName(String name) {
-    if (!ValidationUtils.isValidNativeName(name)) {
-      throw new IllegalArgumentException("Invalid native name " + name);
-    }
   }
 }

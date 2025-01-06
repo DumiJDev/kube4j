@@ -4,7 +4,6 @@ import io.github.dumijdev.kube4j.builder.controller.models.BuildResult;
 import io.github.dumijdev.kube4j.builder.controller.models.NewBuildRequest;
 import io.github.dumijdev.kube4j.builder.storage.ResourceStorage;
 import io.github.dumijdev.kube4j.builder.utils.BuilderQueue;
-import io.github.dumijdev.kube4j.builder.utils.GitUtils;
 import org.mapdb.DB;
 import org.mapdb.serializer.SerializerString;
 import org.springframework.core.io.Resource;

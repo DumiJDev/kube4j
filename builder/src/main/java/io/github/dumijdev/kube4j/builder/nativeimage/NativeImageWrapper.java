@@ -1,19 +1,22 @@
-package io.github.dumijdev.kube4j.builder.utils.nativeimage;
+package io.github.dumijdev.kube4j.builder.nativeimage;
 
+import io.github.dumijdev.kube4j.builder.command.builder.CommandBuilder;
+import io.github.dumijdev.kube4j.builder.command.builder.CommandBuilderFactory;
+import io.github.dumijdev.kube4j.builder.command.builder.Language;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class NativeImageUtils {
-  protected static final String BASE_PATH = "/etc/kube4j/generated";
-  private static final Logger LOG = LoggerFactory.getLogger(NativeImageUtils.class);
+import static io.github.dumijdev.kube4j.builder.command.builder.Language.JAVA;
+
+public abstract class NativeImageWrapper {
+  private static final Logger LOG = LoggerFactory.getLogger(NativeImageWrapper.class);
 
   public static Optional<File> buildNativeImage(
       String language, String projectPath, String outputPath, String mainFile, String targetName
@@ -22,18 +25,18 @@ public abstract class NativeImageUtils {
     validateInputs(language, projectPath, outputPath, targetName);
     prepareOutputDirectory(outputPath);
 
-    Language lang = Language.fromString(language);
-    CommandBuilder commandBuilder = CommandBuilderFactory.getCommandBuilder(lang);
+    Language lang = Language.from(language);
+    CommandBuilder commandBuilder = CommandBuilderFactory.createCommandBuilder(lang);
     String jarPath = projectPath;
 
-    if (lang == Language.JAVA && !projectPath.endsWith(".jar")) {
+    if (lang == JAVA && !projectPath.endsWith(".jar")) {
       LOG.info("Compiling Java project at path: {}", projectPath);
       jarPath = compileJavaWithMaven(projectPath);
     }
 
-    List<String> command = commandBuilder.buildCommands(jarPath, mainFile, targetName);
+    List<String> command = commandBuilder.buildCommands(lang == JAVA ? jarPath : mainFile, targetName);
 
-    executeProcess(command);
+    ProcessExecutor.executeProcess(command);
 
     File outputFile = new File(outputPath, targetName);
     LOG.info("Native image generated successfully at: {}", outputFile.getAbsolutePath());
@@ -46,7 +49,7 @@ public abstract class NativeImageUtils {
     if (isNullOrEmpty(language) || isNullOrEmpty(projectPath) || isNullOrEmpty(outputPath) || isNullOrEmpty(targetName)) {
       throw new IllegalArgumentException("All parameters must be specified.");
     }
-    if (!new File(projectPath).exists()) {
+    if (!Files.exists(Paths.get(projectPath))) {
       throw new IllegalArgumentException("Invalid project path: " + projectPath);
     }
     LOG.info("Inputs validated successfully.");
@@ -70,7 +73,7 @@ public abstract class NativeImageUtils {
     List<String> command = List.of(isWindows ? "mvn.cmd" : "mvn", "clean", "install", "package", "-DskipTests");
     LOG.info("Executing Maven command: {}", String.join(" ", command));
 
-    executeProcess(command, projectDir);
+    ProcessExecutor.executeProcess(command, projectDir);
 
     return findJarInTarget(projectDir).orElseThrow(() -> new RuntimeException("No JAR file found in target directory."));
   }
@@ -84,39 +87,6 @@ public abstract class NativeImageUtils {
     }
 
     return Optional.of(jarFiles[0].getAbsolutePath());
-  }
-
-  private static void executeProcess(List<String> command) throws IOException, InterruptedException {
-    executeProcess(command, null);
-  }
-
-  private static void executeProcess(List<String> command, File workingDirectory) throws IOException, InterruptedException {
-    ProcessBuilder processBuilder = new ProcessBuilder(command).redirectErrorStream(true);
-    if (workingDirectory != null) {
-      processBuilder.directory(workingDirectory);
-    }
-
-    Process process = processBuilder.start();
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-      String line;
-      LOG.info("Process output:");
-      while ((line = reader.readLine()) != null) {
-        System.out.println(line);
-      }
-    } catch (IOException e) {
-      try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-        String line;
-        LOG.info("Process error:");
-        while ((line = reader.readLine()) != null) {
-          System.out.println(line);
-        }
-      }
-    }
-
-    int exitCode = process.waitFor();
-    if (exitCode != 0) {
-      throw new RuntimeException("Process failed with exit code: " + exitCode);
-    }
   }
 
   private static boolean isNullOrEmpty(String str) {

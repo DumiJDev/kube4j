@@ -8,6 +8,8 @@ import java.util.Optional;
 
 public interface BuilderService {
   BuildResult startBuild(NewBuildRequest buildRequest);
+
   BuildResult buildStatus(String buildId);
+
   Optional<Resource> getResource(String imageName);
 }

@@ -1,10 +1,8 @@
 package io.github.dumijdev.kube4j.builder.repository;
 
 import org.mapdb.DB;
-import org.mapdb.DBMaker;
 import org.mapdb.serializer.SerializerString;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Repository;
@@ -13,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,7 +28,7 @@ public class BuildRepositoryMapDB implements BuildRepository {
 
   @Override
   public Optional<Resource> findNativeImage(String imageName) {
-    var path = fileMap.get(resourcesPath.getAbsolutePath() + '/' +imageName);
+    var path = fileMap.get(resourcesPath.getAbsolutePath() + '/' + imageName);
 
     if (path == null) {
       return Optional.empty();

@@ -9,12 +9,13 @@ import java.io.File;
 import java.util.Optional;
 import java.util.UUID;
 
+import static io.github.dumijdev.kube4j.builder.constants.PathConstants.CLONE_PATH;
+
 public abstract class GitUtils {
-  private static final String CLONE_PATH = "/temp/repo-";
   private static final Logger LOG = LoggerFactory.getLogger(GitUtils.class);
 
-  private GitUtils() {}
-
+  private GitUtils() {
+  }
 
   public static Optional<File> cloneRepo(String gitUrl, String branch) {
     var path = new File(CLONE_PATH + UUID.randomUUID());

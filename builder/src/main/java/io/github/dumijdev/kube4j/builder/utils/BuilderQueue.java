@@ -1,7 +1,7 @@
 package io.github.dumijdev.kube4j.builder.utils;
 
 import io.github.dumijdev.kube4j.builder.controller.models.NewBuildRequest;
-import io.github.dumijdev.kube4j.builder.utils.nativeimage.NativeImageUtils;
+import io.github.dumijdev.kube4j.builder.nativeimage.NativeImageWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.*;
+
+import static io.github.dumijdev.kube4j.builder.constants.PathConstants.NATIVE_BUILT_PATH;
 
 @Component
 public class BuilderQueue {
@@ -38,16 +40,17 @@ public class BuilderQueue {
       }
 
       logger.info("New build will be started: {}", newBuildRequest);
-        try {
-          var builderId = BUILDER_MAP.get(newBuildRequest);
-          var clonedRepo = GitUtils.cloneRepo(newBuildRequest.gitUrl(), newBuildRequest.gitBranch().orElse(null));
-          if (clonedRepo.isPresent()) {
-            var nativeImageBuilt = NativeImageUtils.buildNativeImage(newBuildRequest.lang().orElse("java"), clonedRepo.get().getAbsolutePath(), "/etc/kube4j/generated", null, newBuildRequest.appName());
-            nativeImageBuilt.ifPresent(file -> logger.info("Native image was built to: {}", file));
-          }
-        } catch (IOException | InterruptedException e) {
-          logger.error(e.getMessage(), e);
-        };
+      try {
+        var builderId = BUILDER_MAP.get(newBuildRequest);
+        var clonedRepo = GitUtils.cloneRepo(newBuildRequest.gitUrl(), newBuildRequest.gitBranch().orElse(null));
+        if (clonedRepo.isPresent()) {
+          var nativeImageBuilt = NativeImageWrapper.buildNativeImage(newBuildRequest.lang().orElse("java"), clonedRepo.get().getAbsolutePath(), NATIVE_BUILT_PATH, newBuildRequest.mainFile().orElse(null), newBuildRequest.appName());
+          nativeImageBuilt.ifPresent(file -> logger.info("Native image was built to: {}", file));
+        }
+      } catch (IOException | InterruptedException e) {
+        logger.error(e.getMessage(), e);
+      }
+      ;
     }
   }
 }
