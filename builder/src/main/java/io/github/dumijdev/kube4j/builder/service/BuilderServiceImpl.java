@@ -3,7 +3,7 @@ package io.github.dumijdev.kube4j.builder.service;
 import io.github.dumijdev.kube4j.builder.controller.models.BuildResult;
 import io.github.dumijdev.kube4j.builder.controller.models.NewBuildRequest;
 import io.github.dumijdev.kube4j.builder.storage.ResourceStorage;
-import io.github.dumijdev.kube4j.builder.utils.BuilderQueue;
+import io.github.dumijdev.kube4j.builder.builders.BuilderManager;
 import org.mapdb.DB;
 import org.mapdb.serializer.SerializerString;
 import org.springframework.core.io.Resource;
@@ -18,12 +18,12 @@ public class BuilderServiceImpl implements BuilderService {
   private final DB db;
   private final Map<String, String> buildStatus;
   private final ResourceStorage storage;
-  private final BuilderQueue builderQueue;
+  private final BuilderManager builderManager;
 
-  public BuilderServiceImpl(DB db, ResourceStorage storage, BuilderQueue builderQueue) {
+  public BuilderServiceImpl(DB db, ResourceStorage storage, BuilderManager builderManager) {
     this.db = db;
     this.storage = storage;
-    this.builderQueue = builderQueue;
+    this.builderManager = builderManager;
     buildStatus = this.db.hashMap("buildStatus", new SerializerString(), new SerializerString()).createOrOpen();
   }
 
@@ -32,7 +32,7 @@ public class BuilderServiceImpl implements BuilderService {
 
     var buildId = UUID.randomUUID().toString();
 
-    builderQueue.add(buildRequest, buildId);
+    builderManager.addBuild(buildId, buildRequest);
 
     return new BuildResult(buildId, "building");
   }

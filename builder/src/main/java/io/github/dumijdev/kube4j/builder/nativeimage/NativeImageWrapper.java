@@ -27,14 +27,20 @@ public abstract class NativeImageWrapper {
 
     Language lang = Language.from(language);
     CommandBuilder commandBuilder = CommandBuilderFactory.createCommandBuilder(lang);
-    String jarPath = projectPath;
+    File mainArtifactFile = new File(mainFile);
 
     if (lang == JAVA && !projectPath.endsWith(".jar")) {
       LOG.info("Compiling Java project at path: {}", projectPath);
-      jarPath = compileJavaWithMaven(projectPath);
+      var depManager = dependenciesManager(new File(projectPath)).orElseThrow(() -> new RuntimeException("No dependencies manager found."));
+
+      mainArtifactFile = switch (depManager) {
+        case "maven" -> compileJavaWithMaven(projectPath);
+        case "gradle" -> compileJavaWithGradle(projectPath);
+        default -> throw new IllegalStateException("Unexpected value: " + depManager);
+      };
     }
 
-    List<String> command = commandBuilder.buildCommands(lang == JAVA ? jarPath : mainFile, targetName);
+    List<String> command = commandBuilder.buildCommands(mainArtifactFile, targetName);
 
     ProcessExecutor.executeProcess(command);
 
@@ -63,30 +69,66 @@ public abstract class NativeImageWrapper {
     }
   }
 
-  private static String compileJavaWithMaven(String projectPath) throws IOException, InterruptedException {
+  private static File compileJavaWithMaven(String projectPath) throws IOException, InterruptedException {
     File projectDir = new File(projectPath);
     if (!projectDir.isDirectory()) {
       throw new IllegalArgumentException("Invalid Maven project directory: " + projectPath);
     }
 
-    var isWindows = System.getProperty("os.name").toLowerCase().contains("win");
-    List<String> command = List.of(isWindows ? "mvn.cmd" : "mvn", "clean", "install", "package", "-DskipTests");
+    List<String> command = List.of(isWindows() ? "mvn.cmd" : "mvn", "clean", "install", "package", "-DskipTests");
     LOG.info("Executing Maven command: {}", String.join(" ", command));
 
     ProcessExecutor.executeProcess(command, projectDir);
 
-    return findJarInTarget(projectDir).orElseThrow(() -> new RuntimeException("No JAR file found in target directory."));
+    return findJarInTarget(projectDir, "target").orElseThrow(() -> new RuntimeException("No JAR file found in target directory."));
   }
 
-  private static Optional<String> findJarInTarget(File projectDir) {
-    File targetDir = new File(projectDir, "target");
+  private static File compileJavaWithGradle(String projectPath) throws IOException, InterruptedException {
+    File projectDir = new File(projectPath);
+    if (!projectDir.isDirectory()) {
+      throw new IllegalArgumentException("Invalid Gradle project directory: " + projectPath);
+    }
+
+    List<String> command = List.of(isWindows() ? "gradle.cmd" : "gradle");
+    LOG.info("Executing Gradle command: {}", String.join(" ", command));
+
+    ProcessExecutor.executeProcess(command, projectDir);
+
+    return findJarInTarget(projectDir, "build").orElseThrow(() -> new RuntimeException("No JAR file found in build directory"));
+  }
+
+  private static boolean isWindows() {
+    return System.getProperty("os.name").toLowerCase().contains("win");
+  }
+
+  private static Optional<File> findJarInTarget(File projectDir, String buildDir) {
+    File targetDir = new File(projectDir, buildDir);
     File[] jarFiles = targetDir.listFiles((dir, name) -> name.endsWith(".jar"));
 
     if (jarFiles == null || jarFiles.length == 0) {
       return Optional.empty();
     }
 
-    return Optional.of(jarFiles[0].getAbsolutePath());
+    return Optional.of(jarFiles[0]);
+  }
+
+  private static Optional<String> dependenciesManager(File projectDir) {
+    var depsFound = projectDir.listFiles((dir, name) -> List.of("pom.xml", "gradle.build").contains(name));
+
+    if (depsFound == null) {
+      return Optional.empty();
+    }
+
+    for (var dep : depsFound) {
+      if (dep.isDirectory()) {
+        continue;
+      }
+
+      if (dep.getName().equalsIgnoreCase("pom.xml")) return Optional.of("maven");
+      else if (dep.getName().equalsIgnoreCase("gradle.build")) return Optional.of("gradle");
+    }
+
+    return Optional.empty();
   }
 
   private static boolean isNullOrEmpty(String str) {

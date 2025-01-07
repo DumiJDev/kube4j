@@ -29,7 +29,8 @@ public class BuilderServiceGrpcImpl extends BuilderServiceGrpc.BuilderServiceImp
             request.getGitUrl(),
             ofNullable(request.getGitBranch()),
             ofNullable(request.getLang()),
-            ofNullable(request.getMainFile())
+            ofNullable(request.getMainFile()),
+            ofNullable(request.getContext())
         )
     );
 

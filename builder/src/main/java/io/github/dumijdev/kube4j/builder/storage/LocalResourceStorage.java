@@ -1,5 +1,6 @@
 package io.github.dumijdev.kube4j.builder.storage;
 
+import io.github.dumijdev.kube4j.builder.constants.PathConstants;
 import io.github.dumijdev.kube4j.builder.utils.ValidationUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -14,7 +15,6 @@ import java.util.Optional;
 
 @Component
 public class LocalResourceStorage implements ResourceStorage {
-  private final String basePath = "/etc/kube4j/blobs";
 
   private static void validName(String name) {
     if (!ValidationUtils.isValidNativeName(name)) {
@@ -26,7 +26,7 @@ public class LocalResourceStorage implements ResourceStorage {
   public Optional<Resource> find(String name) {
     validName(name);
 
-    var path = Paths.get(basePath, name);
+    var path = Paths.get(PathConstants.NATIVE_BUILT_PATH, name);
     if (!Files.exists(path)) {
       return Optional.empty();
     }
@@ -48,7 +48,7 @@ public class LocalResourceStorage implements ResourceStorage {
   public void save(String name, byte[] content) throws IOException {
     validName(name);
 
-    var file = new File(basePath, name);
+    var file = new File(PathConstants.NATIVE_BUILT_PATH, name);
     try (FileOutputStream fos = new FileOutputStream(file)) {
       fos.write(content);
     }
@@ -58,7 +58,7 @@ public class LocalResourceStorage implements ResourceStorage {
   public void delete(String name) throws IOException {
     validName(name);
 
-    Files.delete(Paths.get(basePath, name));
+    Files.delete(Paths.get(PathConstants.NATIVE_BUILT_PATH, name));
 
   }
 }

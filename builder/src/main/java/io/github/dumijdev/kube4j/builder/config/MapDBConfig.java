@@ -17,7 +17,7 @@ public class MapDBConfig {
 
   @Bean
   public DB createDB() throws IOException {
-    var dbFile = Paths.get(System.getProperty("user.home"), ".kube4j", "databases", "repo.db");
+    var dbFile = Paths.get(System.getProperty("user.home"), ".kube4j", "databases", "kube4j.db");
 
     if (!Files.exists(dbFile.getParent())) {
       logger.info("Creating directories: {}", dbFile.toAbsolutePath());

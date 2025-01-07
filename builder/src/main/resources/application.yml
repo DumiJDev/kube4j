@@ -1,6 +1,9 @@
 spring:
   application:
     name: Kube4J Builder
+  threads:
+    virtual:
+      enabled: true
 
 server:
   http2:

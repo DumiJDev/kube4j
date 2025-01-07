@@ -12,7 +12,8 @@ message BuildRequest {
   optional string gitBranch = 3;
   optional string lang = 4;
   optional string mainFile = 5;
-  optional bool native = 6;
+  optional string context = 6;
+  optional bool native = 7;
 }
 
 message BuildResponse {
