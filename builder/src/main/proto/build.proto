@@ -35,8 +35,17 @@ message BuildResourceResponse {
   bytes content = 2;
 }
 
+message BuildLogsRequest {
+  string buildId = 1;
+}
+
+message BuildLogsResponse {
+  string log = 1;
+}
+
 service BuilderService {
   rpc StartBuild(BuildRequest) returns (BuildResponse);
   rpc GetBuildStatus(BuildStatusRequest) returns (BuildResponse);
   rpc GetNativeImage(BuildResourceRequest) returns (BuildResourceResponse);
+  rpc GetBuildLogs(BuildLogsRequest) returns (stream BuildLogsResponse);
 }

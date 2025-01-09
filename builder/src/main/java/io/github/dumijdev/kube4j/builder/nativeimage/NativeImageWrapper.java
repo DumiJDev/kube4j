@@ -3,6 +3,8 @@ package io.github.dumijdev.kube4j.builder.nativeimage;
 import io.github.dumijdev.kube4j.builder.command.builder.CommandBuilder;
 import io.github.dumijdev.kube4j.builder.command.builder.CommandBuilderFactory;
 import io.github.dumijdev.kube4j.builder.command.builder.Language;
+import io.github.dumijdev.kube4j.builder.commandline.ProcessExecutor;
+import io.github.dumijdev.kube4j.builder.logs.LogCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +17,19 @@ import java.util.Optional;
 
 import static io.github.dumijdev.kube4j.builder.command.builder.Language.JAVA;
 
-public abstract class NativeImageWrapper {
-  private static final Logger LOG = LoggerFactory.getLogger(NativeImageWrapper.class);
+public class NativeImageWrapper {
+  private final Logger LOG = LoggerFactory.getLogger(NativeImageWrapper.class);
+  private final LogCollector logCollector;
 
-  public static Optional<File> buildNativeImage(
+  public NativeImageWrapper(LogCollector logCollector) {
+    this.logCollector = logCollector;
+  }
+
+  public static NativeImageWrapper with(LogCollector logCollector) {
+    return new NativeImageWrapper(logCollector);
+  }
+
+  public Optional<File> buildNativeImage(
       String language, String projectPath, String outputPath, String mainFile, String targetName
   ) throws IOException, InterruptedException {
 
@@ -42,7 +53,7 @@ public abstract class NativeImageWrapper {
 
     List<String> command = commandBuilder.buildCommands(mainArtifactFile, targetName);
 
-    ProcessExecutor.executeProcess(command);
+    ProcessExecutor.with(logCollector).executeProcess(command);
 
     File outputFile = new File(outputPath, targetName);
     LOG.info("Native image generated successfully at: {}", outputFile.getAbsolutePath());
@@ -50,7 +61,7 @@ public abstract class NativeImageWrapper {
     return Optional.of(outputFile);
   }
 
-  private static void validateInputs(String language, String projectPath, String outputPath, String targetName) {
+  private void validateInputs(String language, String projectPath, String outputPath, String targetName) {
     LOG.info("Validating inputs...");
     if (isNullOrEmpty(language) || isNullOrEmpty(projectPath) || isNullOrEmpty(outputPath) || isNullOrEmpty(targetName)) {
       throw new IllegalArgumentException("All parameters must be specified.");
@@ -61,7 +72,7 @@ public abstract class NativeImageWrapper {
     LOG.info("Inputs validated successfully.");
   }
 
-  private static void prepareOutputDirectory(String outputPath) throws IOException {
+  private void prepareOutputDirectory(String outputPath) throws IOException {
     File outputDir = new File(outputPath);
     if (!outputDir.exists()) {
       LOG.info("Creating output directory: {}", outputPath);
@@ -69,7 +80,7 @@ public abstract class NativeImageWrapper {
     }
   }
 
-  private static File compileJavaWithMaven(String projectPath) throws IOException, InterruptedException {
+  private File compileJavaWithMaven(String projectPath) throws IOException, InterruptedException {
     File projectDir = new File(projectPath);
     if (!projectDir.isDirectory()) {
       throw new IllegalArgumentException("Invalid Maven project directory: " + projectPath);
@@ -78,12 +89,12 @@ public abstract class NativeImageWrapper {
     List<String> command = List.of(isWindows() ? "mvn.cmd" : "mvn", "clean", "install", "package", "-DskipTests");
     LOG.info("Executing Maven command: {}", String.join(" ", command));
 
-    ProcessExecutor.executeProcess(command, projectDir);
+    ProcessExecutor.with(logCollector).executeProcess(command, projectDir);
 
     return findJarInTarget(projectDir, "target").orElseThrow(() -> new RuntimeException("No JAR file found in target directory."));
   }
 
-  private static File compileJavaWithGradle(String projectPath) throws IOException, InterruptedException {
+  private File compileJavaWithGradle(String projectPath) throws IOException, InterruptedException {
     File projectDir = new File(projectPath);
     if (!projectDir.isDirectory()) {
       throw new IllegalArgumentException("Invalid Gradle project directory: " + projectPath);
@@ -92,16 +103,16 @@ public abstract class NativeImageWrapper {
     List<String> command = List.of(isWindows() ? "gradle.cmd" : "gradle");
     LOG.info("Executing Gradle command: {}", String.join(" ", command));
 
-    ProcessExecutor.executeProcess(command, projectDir);
+    ProcessExecutor.with(logCollector).executeProcess(command, projectDir);
 
     return findJarInTarget(projectDir, "build").orElseThrow(() -> new RuntimeException("No JAR file found in build directory"));
   }
 
-  private static boolean isWindows() {
+  private boolean isWindows() {
     return System.getProperty("os.name").toLowerCase().contains("win");
   }
 
-  private static Optional<File> findJarInTarget(File projectDir, String buildDir) {
+  private Optional<File> findJarInTarget(File projectDir, String buildDir) {
     File targetDir = new File(projectDir, buildDir);
     File[] jarFiles = targetDir.listFiles((dir, name) -> name.endsWith(".jar"));
 
@@ -112,7 +123,7 @@ public abstract class NativeImageWrapper {
     return Optional.of(jarFiles[0]);
   }
 
-  private static Optional<String> dependenciesManager(File projectDir) {
+  private Optional<String> dependenciesManager(File projectDir) {
     var depsFound = projectDir.listFiles((dir, name) -> List.of("pom.xml", "gradle.build").contains(name));
 
     if (depsFound == null) {
@@ -131,7 +142,7 @@ public abstract class NativeImageWrapper {
     return Optional.empty();
   }
 
-  private static boolean isNullOrEmpty(String str) {
+  private boolean isNullOrEmpty(String str) {
     return str == null || str.isEmpty();
   }
 }

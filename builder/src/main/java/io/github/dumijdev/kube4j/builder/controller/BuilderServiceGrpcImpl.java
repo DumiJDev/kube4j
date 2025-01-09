@@ -2,6 +2,7 @@ package io.github.dumijdev.kube4j.builder.controller;
 
 import com.google.protobuf.ByteString;
 import io.github.dumijdev.kube4j.builder.controller.models.NewBuildRequest;
+import io.github.dumijdev.kube4j.builder.logs.LogStreamer;
 import io.github.dumijdev.kube4j.builder.service.*;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
@@ -84,7 +85,22 @@ public class BuilderServiceGrpcImpl extends BuilderServiceGrpc.BuilderServiceImp
       responseObserver.onError(e);
     } finally {
       responseObserver.onCompleted();
-      log.info("Request responded");
+      log.info("Native image sent");
     }
+  }
+
+  @Override
+  public void getBuildLogs(BuildLogsRequest request, StreamObserver<BuildLogsResponse> responseObserver) {
+    log.info("Get build logs");
+    LogStreamer logStreamer = consumer -> responseObserver.onNext(
+        BuildLogsResponse.newBuilder()
+            .setLog(consumer)
+            .build()
+    );
+
+    service.getBuildLogs(request.getBuildId(), logStreamer);
+
+    responseObserver.onCompleted();
+    log.info("Build logs responded");
   }
 }
