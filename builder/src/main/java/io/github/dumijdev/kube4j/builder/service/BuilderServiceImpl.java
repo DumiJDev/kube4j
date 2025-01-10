@@ -5,32 +5,30 @@ import io.github.dumijdev.kube4j.builder.controller.models.BuildResult;
 import io.github.dumijdev.kube4j.builder.controller.models.NewBuildRequest;
 import io.github.dumijdev.kube4j.builder.logs.LogManager;
 import io.github.dumijdev.kube4j.builder.logs.LogStreamer;
+import io.github.dumijdev.kube4j.builder.repository.BuildRepository;
+import io.github.dumijdev.kube4j.builder.repository.BuildStatusRepository;
+import io.github.dumijdev.kube4j.builder.repository.LogRepository;
 import io.github.dumijdev.kube4j.builder.storage.ResourceStorage;
-import org.mapdb.DB;
-import org.mapdb.serializer.SerializerString;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class BuilderServiceImpl implements BuilderService {
-  private final DB db;
-  private final Map<String, String> buildsMap;
-  private final Map<String, String> logsMap;
+  private final LogRepository logRepository;
+  private final BuildStatusRepository buildStatusRepository;
   private final ResourceStorage storage;
   private final BuilderManager builderManager;
   private final LogManager logManager;
 
-  public BuilderServiceImpl(DB db, ResourceStorage storage, BuilderManager builderManager, LogManager logManager) {
-    this.db = db;
+  public BuilderServiceImpl(LogRepository logRepository, BuildStatusRepository buildStatusRepository, ResourceStorage storage, BuilderManager builderManager, LogManager logManager) {
+    this.logRepository = logRepository;
+    this.buildStatusRepository = buildStatusRepository;
     this.storage = storage;
     this.builderManager = builderManager;
     this.logManager = logManager;
-    buildsMap = this.db.hashMap("buildStatus", new SerializerString(), new SerializerString()).createOrOpen();
-    logsMap = this.db.hashMap("log", new SerializerString(), new SerializerString()).createOrOpen();
   }
 
   @Override
@@ -40,15 +38,14 @@ public class BuilderServiceImpl implements BuilderService {
 
     builderManager.addBuild(buildId, buildRequest);
 
-    buildsMap.put(buildId, "building");
-    db.commit();
+    buildStatusRepository.save(buildId, BuildStatusRepository.BuildStatus.BUILDING);
 
-    return new BuildResult(buildId, "building");
+    return new BuildResult(buildId, BuildStatusRepository.BuildStatus.BUILDING.name());
   }
 
   @Override
   public BuildResult buildStatus(String buildId) {
-    return new BuildResult(buildId, buildsMap.getOrDefault(buildId, "unknown"));
+    return new BuildResult(buildId, buildStatusRepository.get(buildId).toString());
   }
 
   @Override
@@ -62,17 +59,23 @@ public class BuilderServiceImpl implements BuilderService {
 
   @Override
   public void getBuildLogs(String buildId, LogStreamer logStreamer) {
-    switch (buildsMap.get(buildId)) {
-      case "building":
+    var buildStatus = buildStatusRepository.get(buildId);
+    if (buildStatus.isEmpty()) {
+      return;
+    }
+
+    switch (buildStatus.get()) {
+      case BUILDING:
         var collector = logManager.getCollector(buildId);
         System.out.println(collector);
 
         if (collector == null) {
           System.out.println("Collector not found for build id: " + buildId);
-          if (!buildsMap.get(buildId).equals("building")) {
-            var logs = logsMap.getOrDefault(buildId, "");
+          if (buildStatus.get() != BuildStatusRepository.BuildStatus.BUILDING) {
+            var logs = logRepository.getLog(buildId);
 
-            if ("".equals(logs)) {
+            if (logs.isEmpty()) {
+              System.out.println("[Empty] No logs found for build id: " + buildId);
               return;
             }
 
@@ -93,9 +96,9 @@ public class BuilderServiceImpl implements BuilderService {
         }
 
         break;
-      case "failed", "success":
+      case FAILURE, SUCCESS:
         System.out.println("Logs saved");
-        var logs = logsMap.getOrDefault(buildId, "");
+        var logs = logRepository.getLog(buildId);
 
         if ("".equals(logs)) {
           System.out.println("No logs in saved build id: " + buildId);

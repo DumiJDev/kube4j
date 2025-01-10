@@ -5,25 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d413e093-84fc-4a0d-8b7c-48af0b6575c3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/builders/BuildMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/builders/BuilderListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/builders/BuilderManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/builders/NativeBuilder.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/config/BeansConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/CommandBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/CommandBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/JavaCommandBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/JavaCommandBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/PythonCommandBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/PythonCommandBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/RubyCommandBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/command/builder/RubyCommandBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/config/MapDBConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/config/MapDBConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/BuildStatusRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/BuildStatusRepositoryMapDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/builders/NativeBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/builders/NativeBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/commandline/ProcessExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/commandline/ProcessExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/config/BeansConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/config/BeansConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/config/MapDBConfig.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/constants/PathConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/constants/PathConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/controller/BuilderServiceGrpcImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/controller/BuilderServiceGrpcImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/controller/models/NewBuildRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/controller/models/NewBuildRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/logs/LogCollector.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/logs/LogCollector.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/logs/LogManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/logs/LogManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/nativeimage/NativeImageWrapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/nativeimage/NativeImageWrapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/BuildRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/BuildRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/BuildRepositoryMapDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/BuildRepositoryMapDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/LogRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/LogRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/LogRepositoryMapDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/repository/LogRepositoryMapDB.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/service/BuilderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/service/BuilderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/storage/LocalResourceStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/storage/LocalResourceStorage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/utils/BuilderQueue.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/proto/build.proto" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/proto/build.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/builder/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/utils/GitUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/builder/src/main/java/io/github/dumijdev/kube4j/builder/utils/GitUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,37 +84,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Maven.kube4j-builder [org.springframework.boot:spring-boot-maven-plugin:3.4.1:run].executor": "Run",
-    "Maven.kube4j-parent [clean,compile].executor": "Run",
-    "Maven.kube4j-parent [clean,install,-U].executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Spring Boot.ApiServerApplication.executor": "Run",
-    "Spring Boot.BuilderApplication.executor": "Run",
-    "git-widget-placeholder": "dev",
-    "kotlin-language-version-configured": "true",
-    "last.edited.regexp": "",
-    "last_opened_file_path": "C:/Users/dumil/Documents/Projects/Java/kube4j",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.annotationProcessors",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Maven.kube4j-builder [org.springframework.boot:spring-boot-maven-plugin:3.4.1:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.kube4j-parent [clean,compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.kube4j-parent [clean,install,-U].executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ApiServerApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.BuilderApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last.edited.regexp&quot;: &quot;&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dumil/Documents/Projects/Java/kube4j&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.projectsettings.compiler.annotationProcessors&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\dumil\Documents\Projects\Java\kube4j\core\src\test\java" />
@@ -195,6 +193,7 @@
       <workItem from="1735664020016" duration="7029000" />
       <workItem from="1735989664434" duration="35919000" />
       <workItem from="1736097384278" duration="30393000" />
+      <workItem from="1736462978197" duration="1878000" />
     </task>
     <servers />
   </component>

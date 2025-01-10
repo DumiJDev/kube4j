@@ -1,6 +1,8 @@
 package io.github.dumijdev.kube4j.builder.repository;
 
+import io.github.dumijdev.kube4j.builder.constants.PathConstants;
 import org.mapdb.DB;
+import org.mapdb.DBMaker;
 import org.mapdb.serializer.SerializerString;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,8 +24,15 @@ public class BuildRepositoryMapDB implements BuildRepository {
   private final DB db;
   private final Map<String, String> fileMap;
 
-  public BuildRepositoryMapDB(DB db) throws IOException {
-    this.db = db;
+  public BuildRepositoryMapDB() throws IOException {
+    var dbFile = Paths.get(PathConstants.Database.BUILDS_PATH);
+
+    if (!Files.exists(dbFile)) {
+      logger.info("Creating DB file {}", dbFile);
+      Files.createDirectories(dbFile.getParent());
+    }
+
+    this.db = DBMaker.fileDB(dbFile.toFile()).checksumHeaderBypass().closeOnJvmShutdown().transactionEnable().make();
     fileMap = db.hashMap("native-images", new SerializerString(), new SerializerString()).createOrOpen();
   }
 

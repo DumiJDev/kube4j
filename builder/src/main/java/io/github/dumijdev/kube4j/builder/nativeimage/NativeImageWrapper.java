@@ -44,6 +44,8 @@ public class NativeImageWrapper {
       LOG.info("Compiling Java project at path: {}", projectPath);
       var depManager = dependenciesManager(new File(projectPath)).orElseThrow(() -> new RuntimeException("No dependencies manager found."));
 
+      LOG.info("Dependency manager identified: {}", depManager);
+
       mainArtifactFile = switch (depManager) {
         case "maven" -> compileJavaWithMaven(projectPath);
         case "gradle" -> compileJavaWithGradle(projectPath);

@@ -28,7 +28,7 @@ public abstract class GitUtils {
 
     try (var git = cloneCommand.call()) {
       LOG.info("Cloned repository at {}", path.getAbsolutePath());
-      if (branch != null) {
+      if (Optional.ofNullable(branch).isPresent() && !branch.isEmpty()) {
         LOG.info("Switching to branch {}", branch);
         git.checkout().setName(branch).call();
         LOG.info("Switched to branch {}", branch);

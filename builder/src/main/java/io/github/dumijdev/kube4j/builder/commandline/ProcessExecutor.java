@@ -53,7 +53,6 @@ public class ProcessExecutor {
     }
 
     int exitCode = process.waitFor();
-    logCollector.finish();
     if (exitCode != 0) {
       throw new RuntimeException("Process failed with exit code: " + exitCode);
     }

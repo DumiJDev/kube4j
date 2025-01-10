@@ -1,10 +1,12 @@
 package io.github.dumijdev.kube4j.builder.logs;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class LogCollector {
+public class LogCollector implements Closeable {
   private final List<String> logs = new ArrayList<>();
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
   private boolean finished = false;
@@ -80,5 +82,10 @@ public class LogCollector {
     } finally {
       lock.readLock().unlock();
     }
+  }
+
+  @Override
+  public void close() throws IOException {
+    finish();
   }
 }
