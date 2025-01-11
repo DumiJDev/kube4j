@@ -13,4 +13,6 @@ public interface LogRepository {
   void deleteAll();
 
   void save(String buildId, String message);
+
+  boolean existsById(String logId);
 }

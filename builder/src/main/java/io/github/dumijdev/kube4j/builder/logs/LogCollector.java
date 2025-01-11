@@ -2,16 +2,16 @@ package io.github.dumijdev.kube4j.builder.logs;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class LogCollector implements Closeable {
-  private final List<String> logs = new ArrayList<>();
+  protected final List<String> logs = new LinkedList<>();
   private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-  private boolean finished = false;
-  private final LogCollectionListener listener;
-  private final String id;
+  protected boolean finished = false;
+  protected final LogCollectionListener listener;
+  protected final String id;
 
   public LogCollector(LogCollectionListener listener, String id) {
     this.listener = listener;
@@ -60,9 +60,9 @@ public class LogCollector implements Closeable {
     lock.readLock().lock();
     try {
       if (offset >= logs.size()) {
-        return new ArrayList<>();
+        return new LinkedList<>();
       }
-      return new ArrayList<>(logs.subList(offset, logs.size()));
+      return new LinkedList<>(logs.subList(offset, logs.size()));
     } finally {
       lock.readLock().unlock();
     }
@@ -78,7 +78,7 @@ public class LogCollector implements Closeable {
   public List<String> getLogs() {
     lock.readLock().lock();
     try {
-      return new ArrayList<>(logs);
+      return new LinkedList<>(logs);
     } finally {
       lock.readLock().unlock();
     }

@@ -5,7 +5,6 @@ import io.github.dumijdev.kube4j.builder.controller.models.BuildResult;
 import io.github.dumijdev.kube4j.builder.controller.models.NewBuildRequest;
 import io.github.dumijdev.kube4j.builder.logs.LogManager;
 import io.github.dumijdev.kube4j.builder.logs.LogStreamer;
-import io.github.dumijdev.kube4j.builder.repository.BuildRepository;
 import io.github.dumijdev.kube4j.builder.repository.BuildStatusRepository;
 import io.github.dumijdev.kube4j.builder.repository.LogRepository;
 import io.github.dumijdev.kube4j.builder.storage.ResourceStorage;
@@ -74,17 +73,10 @@ public class BuilderServiceImpl implements BuilderService {
           if (buildStatus.get() != BuildStatusRepository.BuildStatus.BUILDING) {
             var logs = logRepository.getLog(buildId);
 
-            if (logs.isEmpty()) {
-              System.out.println("[Empty] No logs found for build id: " + buildId);
-              return;
-            }
-
-            System.out.println("[building - collector null] Reading logs from build id: " + buildId);
             for (var line : logs.split("\n")) {
               logStreamer.consumeStream(line);
             }
           }
-
           return;
         }
 
@@ -108,6 +100,7 @@ public class BuilderServiceImpl implements BuilderService {
         for (var line : logs.split("\n")) {
           logStreamer.consumeStream(line);
         }
+
         break;
       default:
         logStreamer.consumeStream("No logs found for build id: " + buildId);

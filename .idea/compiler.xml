@@ -11,8 +11,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="kube4j-workers" />
-        <module name="kube4j-builder" />
         <module name="kube4j-master" />
+        <module name="kube4j-builder" />
       </profile>
     </annotationProcessing>
   </component>

@@ -3,10 +3,13 @@ package io.github.dumijdev.kube4j.builder.logs;
 import io.github.dumijdev.kube4j.builder.repository.LogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class LogManager implements LogCollectionListener {
   private final Map<String, LogCollector> collectors = new ConcurrentHashMap<>();
   private final LogRepository logRepository;
@@ -16,7 +19,6 @@ public class LogManager implements LogCollectionListener {
     this.logRepository = logRepository;
   }
 
-  // Cria um novo LogCollector e o registra pelo logId
   public LogCollector createCollector(String logId) {
     logger.info("Creating collector for logId: {}", logId);
     LogCollector collector = new LogCollector(this, logId);
@@ -24,20 +26,22 @@ public class LogManager implements LogCollectionListener {
     return collector;
   }
 
-  // Recupera um LogCollector existente pelo logId
   public LogCollector getCollector(String logId) {
     logger.info("Getting collector for logId: {}", logId);
     return collectors.get(logId);
   }
 
-  // Remove um LogCollector quando não é mais necessário
   public void removeCollector(String logId) {
     logger.info("Removing collector for logId: {}", logId);
-    collectors.remove(logId);
+    try (var collector = collectors.remove(logId)) {
+      logger.info("Collector removed: {}", logId);
+    } catch (IOException ignored) {
+    }
   }
 
   @Override
   public void onLogsCollected(String logId) {
+    if (logRepository.existsById(logId)) return;
     logger.info("On logs collected for logId: {}", logId);
     var collector = getCollector(logId);
 
