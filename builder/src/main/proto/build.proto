@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package io.github.dumijdev.kube4j.builder;
+
+option java_multiple_files = true;
+option java_package = "io.github.dumijdev.kube4j.builder.service";
+option java_outer_classname = "BuilderGrpcService";
+
+message BuildRequest {
+  string appName = 1;
+  string gitUrl = 2;
+  optional string gitBranch = 3;
+  optional string lang = 4;
+  optional string mainFile = 5;
+  optional string context = 6;
+  optional bool native = 7;
+}
+
+message BuildResponse {
+  string id = 1;
+  string status = 2;
+  optional string imageName = 3;
+}
+
+message BuildStatusRequest {
+  string buildId = 1;
+}
+
+message BuildResourceRequest {
+  string imageName = 1;
+}
+
+message BuildResourceResponse {
+  string name = 1;
+  bytes content = 2;
+}
+
+message BuildLogsRequest {
+  string buildId = 1;
+}
+
+message BuildLogsResponse {
+  string log = 1;
+}
+
+service BuilderService {
+  rpc StartBuild(BuildRequest) returns (BuildResponse);
+  rpc GetBuildStatus(BuildStatusRequest) returns (BuildResponse);
+  rpc GetNativeImage(BuildResourceRequest) returns (BuildResourceResponse);
+  rpc GetBuildLogs(BuildLogsRequest) returns (stream BuildLogsResponse);
+}
